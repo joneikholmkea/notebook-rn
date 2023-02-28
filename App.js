@@ -1,20 +1,31 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+
+import React from 'react';
+
+import {NavigationContainer} from '@react-navigation/native';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
+
+import ListView from './screens/ListView';
+import DetailView from './screens/DetailView';
 
 export default function App() {
+  
+ const Stack = createNativeStackNavigator();
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <NavigationContainer>
+        <Stack.Navigator>
+        <Stack.Screen
+          name="ListView"
+          component={ListView}
+          options={{title: 'ListView'}}
+        />
+        <Stack.Screen name="DetailView" component={DetailView} /> 
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+
+// sources: Good ones at that!
+// https://firebase.google.com/docs/web/setup#add-sdk-and-initialize
+// https://firebase.google.com/docs/storage/web/upload-files
