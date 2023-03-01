@@ -26,7 +26,6 @@ const DetailView = ({navigation, route}) => {
       });
     setImagePath(result.assets[0].uri); 
     setHasImage(true);
-    route.params.note.hasImage = true;
   }
 
   const uploadImage = async () => {
@@ -66,16 +65,16 @@ const DetailView = ({navigation, route}) => {
     });
   };
 
-  if(route.params.note.hasImage && imagePath == null){ 
+  if(hasImage && imagePath == null){ 
     downloadImage()
   }
 
   const saveNote = async () => {
     await setDoc(doc(database, chatColl, route.params.note.key), {
         text:text,
-        hasImage: route.params.note.hasImage
+        hasImage: hasImage
     })
-    if(route.params.note.hasImage){
+    if(hasImage){
       uploadImage();
     }
   }
