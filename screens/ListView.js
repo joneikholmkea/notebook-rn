@@ -31,10 +31,10 @@ const ListView = ({navigation, route}) => {  // route.params.xxx
         // const querySnapshot = await getDocs(q);
         onSnapshot(q, snapshot =>{
             const _notes = [];
-            snapshot.forEach(snap => {
+            snapshot.forEach(doc => {
                 _notes.push({
-                ...snap.data(),
-                key: snap.id
+                ...doc.data(),
+                key: doc.id
                 });
             });
         // setNotes( prevNotes => {
@@ -50,9 +50,9 @@ const ListView = ({navigation, route}) => {  // route.params.xxx
             hasImage: false
         });
     }
-
-    const clickRow = (obj) => {
-        navigation.navigate('DetailView', {object: obj})
+    const detailView = "DetailView"
+    const clickRow = (item) => {
+        navigation.navigate(detailView, {note: item})
     }
 
     

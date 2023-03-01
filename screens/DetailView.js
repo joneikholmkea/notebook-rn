@@ -8,18 +8,14 @@ import React, {
 } from 'react';
 import {
   doc,
-  collection,
-  addDoc,
   setDoc,
-  query,
-  onSnapshot
 } from 'firebase/firestore';
 import {database, storage} from '../config/firebase';
 import {ref, uploadBytes, getDownloadURL, deleteObject} from "firebase/storage";
 
 const DetailView = ({navigation, route}) => {
-  const [text, setText] = useState(route.params.object.text);
-  const [hasImage, setHasImage] = useState(route.params.object.hasImage);
+  const [text, setText] = useState(route.params.note.text);
+  const [hasImage, setHasImage] = useState(route.params.note.hasImage);
   const [imagePath, setImagePath] = useState(null);
   
   const chatColl = 'notes';
@@ -28,24 +24,23 @@ const DetailView = ({navigation, route}) => {
       let result = await ImagePicker.launchImageLibraryAsync({
           allowsEditing:true
       });
-    setImagePath(result.assets[0].uri); // was result.assets[0].uri
+    setImagePath(result.assets[0].uri); 
     setHasImage(true);
-    route.params.object.hasImage = true;
-    console.log("in takeImageHandler. route..hasImage: " + route.params.object.hasImage);
+    route.params.note.hasImage = true;
   }
 
   const uploadImage = async () => {
-    await deleteImageFromFBStorageOnly();
+    await deleteImageFromFBStorageOnly();  //  delete old picture first
     const res = await fetch(imagePath);
     const blob = await res.blob();
-    const storageRef = ref(storage, route.params.object.key);
+    const storageRef = ref(storage, route.params.note.key);
     uploadBytes(storageRef, blob).then((snapshot) => {
-    console.log("uploaded blob or file " );
+      console.log("uploaded blob or file " );
     });
 };
 
   const downloadImage = async () => {
-    const storageRef = ref(storage, route.params.object.key);
+    const storageRef = ref(storage, route.params.note.key);
     getDownloadURL(storageRef)
     .then((url) => {
     // Insert url into an <img> tag to "download"
@@ -71,22 +66,16 @@ const DetailView = ({navigation, route}) => {
     });
   };
 
-  if(route.params.object.hasImage && imagePath == null){ 
+  if(route.params.note.hasImage && imagePath == null){ 
     downloadImage()
   }
 
   const saveNote = async () => {
-    await setDoc(doc(database, chatColl, route.params.object.key), {
+    await setDoc(doc(database, chatColl, route.params.note.key), {
         text:text,
-        hasImage: route.params.object.hasImage
+        hasImage: route.params.note.hasImage
     })
-    // Alert("hello")
-    // setTimeout(() => {
-    //   Alert.alert(
-    //     'Saved!'
-    //   );
-    // }, 100);
-    if(route.params.object.hasImage){
+    if(route.params.note.hasImage){
       uploadImage();
     }
   }
@@ -94,7 +83,7 @@ const DetailView = ({navigation, route}) => {
 
   const deleteImageFromFBStorageOnly = async () => {
     console.log("deleteImageFromFBS called");
-    const storageRef = ref(storage, route.params.object.key);
+    const storageRef = ref(storage, route.params.note.key);
     deleteObject(storageRef).then(() => {
     }).catch((error) => {
     });
@@ -102,7 +91,7 @@ const DetailView = ({navigation, route}) => {
 
 
   const deleteImage = async () => {
-    const storageRef = ref(storage, route.params.object.key);
+    const storageRef = ref(storage, route.params.note.key);
     deleteObject(storageRef).then(() => {
       // File deleted successfully
       route.params.object.hasImage = false;
@@ -123,10 +112,10 @@ const DetailView = ({navigation, route}) => {
         </View>
         <TextInput multiline={true} 
           onChangeText={newText => setText(newText)}>
-            {route.params.object.text}
+            {text}
         </TextInput>
-        { hasImage &&
-         <Image  style={styles.image} source={{uri: imagePath}}/>
+        { hasImage && 
+        <Image  style={styles.image} source={{uri: imagePath}}/>
         }
     </View> );
   };

@@ -13,11 +13,12 @@ export default function App() {
  const Stack = createNativeStackNavigator();
   return (
     <NavigationContainer>
-        <Stack.Navigator>
+        <Stack.Navigator initialRouteName='ListView'>
         <Stack.Screen
           name="ListView"
           component={ListView}
-          options={{title: 'ListView'}}
+          options={{title: 'ListView3'}
+        }
         />
         <Stack.Screen name="DetailView" component={DetailView} /> 
       </Stack.Navigator>
