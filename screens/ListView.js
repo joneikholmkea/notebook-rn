@@ -22,7 +22,6 @@ import {
 import {database, storage} from '../config/firebase'
 
 const ListView = ({navigation, route}) => {  // route.params.xxx
-
     const chatColl = 'notes';
     const [notes, setNotes] = useState([]);
     const readDB = async () => {
@@ -55,10 +54,16 @@ const ListView = ({navigation, route}) => {  // route.params.xxx
         navigation.navigate(detailView, {note: item})
     }
 
+    const mapView = "MapView"
+    const clickMap = (item) => {
+      navigation.navigate(mapView, {notes:notes})
+  }
+
     
     return (
         <View style={styles.container}>
             <Button title='New Note' onPress={addNote}/>
+            <Button title='Map' onPress={clickMap}/>
             <Button title='Load Notes' onPress={readDB}/>
             <View style={styles.imagePreview}>
                 <Image  style={styles.image} source={{uri: 'https://reactjs.org/logo-og.png'}}/>

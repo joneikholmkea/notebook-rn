@@ -14,6 +14,7 @@ import {database, storage} from '../config/firebase';
 import {ref, uploadBytes, getDownloadURL, deleteObject} from "firebase/storage";
 
 const DetailView = ({navigation, route}) => {
+  //console.log("DetailView: ", route.params)
   const [text, setText] = useState(route.params.note.text);
   const [hasImage, setHasImage] = useState(route.params.note.hasImage);
   const [imagePath, setImagePath] = useState(null);
@@ -72,6 +73,8 @@ const DetailView = ({navigation, route}) => {
   const saveNote = async () => {
     await setDoc(doc(database, chatColl, route.params.note.key), {
         text:text,
+        latitude: route.params.latitude,
+        longitude: route.params.longitude,
         hasImage: hasImage
     })
     if(hasImage){
@@ -101,12 +104,18 @@ const DetailView = ({navigation, route}) => {
       // Uh-oh, an error occurred!
     });
 };
+
+const mapView = "MapView"
+const goToMap = () => {
+  navigation.navigate(mapView, {note: route.params.note})
+}
     
     return (
     <View>
       <View style={styles.buttons}>
         <Button  title='Get Image' onPress={takeImageHandler}/>
         <Button title='Delete Image' onPress={deleteImage}/>
+        <Button title='Location' onPress={goToMap}/>
         <Button style={styles.saveButton} title='Save' onPress={saveNote}/>
         </View>
         <TextInput multiline={true} 
