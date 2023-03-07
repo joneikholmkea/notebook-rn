@@ -33,7 +33,8 @@ const MapView2 = ({navigation, route}) => {  // route.params.xxx
             pinColor = {"blue"} 
             title={"title"}
             description={"description"}
-            onSelect={onSelectMarker}
+            onPress={onSelectMarker}
+            // onSelect={onSelectMarker}
             >
 
         </Marker>)
