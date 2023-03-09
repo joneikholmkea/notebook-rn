@@ -9,15 +9,18 @@ import React, {
 import {
   doc,
   setDoc,
+  updateDoc,
+  GeoPoint
 } from 'firebase/firestore';
 import {database, storage} from '../config/firebase';
 import {ref, uploadBytes, getDownloadURL, deleteObject} from "firebase/storage";
 
 const DetailView = ({navigation, route}) => {
-  //console.log("DetailView: ", route.params)
+  console.log("DetailView: ", route.params)
   const [text, setText] = useState(route.params.note.text);
   const [hasImage, setHasImage] = useState(route.params.note.hasImage);
   const [imagePath, setImagePath] = useState(null);
+  const [location, setLocation] = useState(null);
   
   const chatColl = 'notes';
 
@@ -71,12 +74,19 @@ const DetailView = ({navigation, route}) => {
   }
 
   const saveNote = async () => {
-    await setDoc(doc(database, chatColl, route.params.note.key), {
+    const ref = doc(database, chatColl, route.params.note.key)
+    if(route.params.latitude){
+      await updateDoc(ref, {
         text:text,
-        latitude: route.params.latitude,
-        longitude: route.params.longitude,
+        location: new GeoPoint(route.params.latitude, route.params.longitude),
         hasImage: hasImage
-    })
+      })
+    }else{
+      await updateDoc(ref, {
+        text:text,
+        hasImage: hasImage
+      })
+    }
     if(hasImage){
       uploadImage();
     }
@@ -106,8 +116,9 @@ const DetailView = ({navigation, route}) => {
 };
 
 const mapView = "MapView"
+
 const goToMap = () => {
-  navigation.navigate(mapView, {note: route.params.note})
+  navigation.navigate(mapView, {note: route.params.note })
 }
     
     return (

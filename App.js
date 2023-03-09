@@ -1,6 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
 
-import React, {useState} from 'react';
+import React, {createContext} from 'react';
 
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
@@ -9,11 +9,10 @@ import ListView from './screens/ListView';
 import DetailView from './screens/DetailView';
 import MapView from './screens/MapView';
 
+export const ct = createContext()
+
 export default function App() {
   
-  //const [allNotes, setAllNotes] = useState(["hej", "med"])
-  
-
  const Stack = createNativeStackNavigator();
   return (
     <NavigationContainer>
