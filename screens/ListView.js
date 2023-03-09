@@ -16,7 +16,9 @@ import {
   collection,
   addDoc,
   query,
-  onSnapshot
+  onSnapshot,
+  doc,
+  getDoc
 } from 'firebase/firestore'
 
 import {database, storage} from '../config/firebase'
@@ -43,6 +45,15 @@ const ListView = ({navigation, route}) => {  // route.params.xxx
         });
     }
 
+    const getNote = async (id) => {
+      const collectionRef = doc(database, chatColl);
+      const docSnap = await getDoc(docRef);
+
+      if (docSnap.exists()) {
+        console.log("Document data:", docSnap.data());
+      } 
+    }
+
     const addNote = () => {
         addDoc(collection(database, chatColl), {
             text: "Tuesday note",
@@ -55,7 +66,7 @@ const ListView = ({navigation, route}) => {  // route.params.xxx
     }
 
     const mapView = "MapView"
-    const clickMap = (item) => {
+    const clickMap = () => {
       navigation.navigate(mapView, {notes:notes})
   }
 

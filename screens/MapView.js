@@ -1,10 +1,14 @@
 import React, { useState,useEffect } from 'react'
 import MapView, {Marker} from 'react-native-maps'
 import { StyleSheet, View, Alert } from 'react-native'
-
+import {
+    doc,
+    getDoc
+} from 'firebase/firestore'
+import {database} from '../config/firebase'
 
 const MapView2 = ({navigation, route}) => {  // route.params.xxx
-    //console.log("MapView ", route.params)
+    //console.log("MapView .." , route.params.notes)
     const [regionState, setRegionState] = useState({
         latitude: 55.12,
         longitude: 12.0,
@@ -21,11 +25,16 @@ const MapView2 = ({navigation, route}) => {  // route.params.xxx
         useEffect(() => {
 
             for(n of route.params.notes){
-                const m = newMarker(55, 12)
-                m.key = n.key
-                console.log(n)
-                // markers.push(m)
-                markerState.push(m)
+                if(n.location){
+                    const m = newMarker(n.location.latitude, n.location.longitude, n.key, n.text)
+                    // console.log("creating newMarker ", m)
+                    //m.key = n.key
+                    console.log("creating newMarker, after key ", m)
+                    m.mynote = n
+                    console.log(m)
+                    // markers.push(m)
+                    markerState.push(m)
+                }
             }
             setMarkerState(markerState)
         console.log(markerState)
@@ -33,28 +42,47 @@ const MapView2 = ({navigation, route}) => {  // route.params.xxx
         }, []);
     }
 
-    const detailView = "DetailView"
-    const onSelectMarker = (data) => {
-        console.log("marker pressd",data.nativeEvent.coordinate)
-        navigation.navigate({
-            name: detailView,
-            params: data.nativeEvent.coordinate,
-            merge: true,
-        })
-    }
-
-    const newMarker = (latitude, longitude) => {
+    const newMarker = (latitude, longitude, key, text) => {
         return(
             <Marker coordinate = {{latitude,longitude}}
-            key={1234}
             pinColor = {"blue"} 
-            title={"title"}
-            description={"description"}
+            title={"Location"}
+            description={text}
+            key={key}
+            identifier={key}
             onPress={onSelectMarker}
             >
         </Marker>
         )
     }
+
+    const detailView = "DetailView"
+    const onSelectMarker = async (data) => {
+        const id = data.nativeEvent.id
+        const coordinate = data.nativeEvent.coordinate
+        // fetch note from notes ?
+        console.log("-----------", id)
+        const note = await getNote(id)
+        note.key = id
+        console.log("-----------", note)
+
+        navigation.navigate({
+            name: detailView,
+            params: {note:note},
+            merge: false,
+        })
+    }
+
+    const chatColl = 'notes';
+    const getNote = async (id) => {
+        const docRef = doc(database, chatColl, id);
+        const docSnap = await getDoc(docRef)
+        if (docSnap.exists()) {
+          return docSnap.data()
+        } 
+      }
+
+   
 
 
     const onCreatePin = (data) => {
