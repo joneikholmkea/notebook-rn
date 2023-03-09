@@ -7,9 +7,9 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 
 import ListView from './screens/ListView';
 import DetailView from './screens/DetailView';
-import MapView from './screens/MapView';
+import MapView2 from './screens/MapView2';
 
-export const ct = createContext()
+export const CT = createContext()
 
 export default function App() {
   
@@ -24,7 +24,7 @@ export default function App() {
         }
         />
         <Stack.Screen name="DetailView" component={DetailView} />
-        <Stack.Screen name="MapView" component={MapView} /> 
+        <Stack.Screen name="MapView2" component={MapView2} /> 
       </Stack.Navigator>
     </NavigationContainer>
   );

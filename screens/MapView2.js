@@ -8,7 +8,6 @@ import {
 import {database} from '../config/firebase'
 
 const MapView2 = ({navigation, route}) => {  // route.params.xxx
-    //console.log("MapView .." , route.params.notes)
     const [regionState, setRegionState] = useState({
         latitude: 55.12,
         longitude: 12.0,
@@ -21,24 +20,15 @@ const MapView2 = ({navigation, route}) => {  // route.params.xxx
     }
         
     if(route.params.notes){
-        var markers=[]
         useEffect(() => {
-
-            for(n of route.params.notes){
+            for(n of route.params.notes){ // create Marker for each note
                 if(n.location){
                     const m = newMarker(n.location.latitude, n.location.longitude, n.key, n.text)
-                    // console.log("creating newMarker ", m)
-                    //m.key = n.key
-                    console.log("creating newMarker, after key ", m)
                     m.mynote = n
-                    console.log(m)
-                    // markers.push(m)
                     markerState.push(m)
                 }
             }
             setMarkerState(markerState)
-        console.log(markerState)
-        // setMarkerState(markers) 
         }, []);
     }
 
@@ -59,13 +49,8 @@ const MapView2 = ({navigation, route}) => {  // route.params.xxx
     const detailView = "DetailView"
     const onSelectMarker = async (data) => {
         const id = data.nativeEvent.id
-        const coordinate = data.nativeEvent.coordinate
-        // fetch note from notes ?
-        console.log("-----------", id)
         const note = await getNote(id)
         note.key = id
-        console.log("-----------", note)
-
         navigation.navigate({
             name: detailView,
             params: {note:note},
@@ -82,11 +67,9 @@ const MapView2 = ({navigation, route}) => {  // route.params.xxx
         } 
       }
 
-   
-
 
     const onCreatePin = (data) => {
-        const coordinate = data.nativeEvent.coordinate
+        const coordinate = data.nativeEvent.coordinate // store event data for later use in async task.
         const {latitude, longitude} = coordinate
             markerState.push(
             <Marker coordinate = {{latitude,longitude}}

@@ -17,19 +17,16 @@ import {
   addDoc,
   query,
   onSnapshot,
-  doc,
-  getDoc
 } from 'firebase/firestore'
 
-import {database, storage} from '../config/firebase'
+import {database} from '../config/firebase'
 
-const ListView = ({navigation, route}) => {  // route.params.xxx
+const ListView = ({navigation}) => {  // route.params.xxx
     const chatColl = 'notes';
     const [notes, setNotes] = useState([]);
     const readDB = async () => {
         const collectionRef = collection(database, chatColl);
         const q = query(collectionRef, ref => ref.orderBy('createdAt', 'desc'));
-        // const querySnapshot = await getDocs(q);
         onSnapshot(q, snapshot =>{
             const _notes = [];
             snapshot.forEach(doc => {
@@ -38,20 +35,8 @@ const ListView = ({navigation, route}) => {  // route.params.xxx
                 key: doc.id
                 });
             });
-        // setNotes( prevNotes => {
-        //    return {...prevNotes, _notes}
-        //  });
         setNotes(_notes);
         });
-    }
-
-    const getNote = async (id) => {
-      const collectionRef = doc(database, chatColl);
-      const docSnap = await getDoc(docRef);
-
-      if (docSnap.exists()) {
-        console.log("Document data:", docSnap.data());
-      } 
     }
 
     const addNote = () => {
@@ -65,7 +50,7 @@ const ListView = ({navigation, route}) => {  // route.params.xxx
         navigation.navigate(detailView, {note: item})
     }
 
-    const mapView = "MapView"
+    const mapView = "MapView2"
     const clickMap = () => {
       navigation.navigate(mapView, {notes:notes})
   }
